@@ -47,6 +47,8 @@ void	BitcoinExchange::check_validty(std::string line, std::string sep) {
 	std::string parts;
 	std::string tmp_date;
 	std::string tmp_date_range;
+	std::string search_tmp_date;
+	std::string search_tmp_date_range;
 	char *endp;
 	int i = 0;
 	std::map<std::string, std::map<std::string, float> >::iterator cont_it;
@@ -98,6 +100,8 @@ void	BitcoinExchange::check_validty(std::string line, std::string sep) {
 				if (sep == ",")
 					_my_db[tmp_date_range][tmp_date] = val;
 				else {
+					search_tmp_date_range = tmp_date_range;
+					search_tmp_date = tmp_date;
 					if (_my_db.find(tmp_date_range) != _my_db.end()) {
 						if (_my_db[tmp_date_range].find(tmp_date) == _my_db[tmp_date_range].end()) {
 							for (member_it = _my_db[tmp_date_range].begin(); member_it != _my_db[tmp_date_range].end(); ++member_it) {
@@ -109,17 +113,16 @@ void	BitcoinExchange::check_validty(std::string line, std::string sep) {
 									member_it--;
 								else
 									not_begin++;
-								tmp_date = member_it->first;
+								search_tmp_date = member_it->first;
 							}
 							if (not_begin || member_it == _my_db[tmp_date_range].end()) {
 								cont_it = _my_db.find(tmp_date_range);
-								std::cout << cont_it->first << "--------------------" << tmp_date << std::endl;
 								cont_it--;
-								tmp_date_range = cont_it->first;
-								tmp_date = cont_it->second.end()->first;
+								search_tmp_date_range = cont_it->first;
+								search_tmp_date = cont_it->second.rbegin()->first;
 							}
 						}
-				 		std::cout << tmp_date << " => " << val << " = " << _my_db[tmp_date_range][tmp_date] * val << std::endl;
+				 		std::cout << tmp_date << " => " << val << " = " << _my_db[search_tmp_date_range][search_tmp_date] * val << std::endl;
 					}
 					else {
 				 		std::cout << "not found " << tmp_date << std::endl;
