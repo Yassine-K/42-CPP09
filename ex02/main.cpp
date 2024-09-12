@@ -21,8 +21,6 @@ int main(int ac, char **av) {
 			deq_sort.push_back(val);
 		}
 		ford_john(vec_sort, deq_sort);
-		// std::cout << "Error: " << vec_sort.size() << std::endl;
-		// std::cout << "Error: " << deq_sort.size() << std::endl;
 	}
 	catch (const char *e) {
 		std::cout << "Error: " << e << std::endl;
