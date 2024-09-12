@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -15,53 +16,24 @@ void	print_cont(T cont, std::string s) {
 	std::cout << std::endl;
 }
 
-// template<typename T>
-// T	ford_container(T container, int *incr) {
-// 	int breakpoint = container.size() / 2;
-// 	if (container.size() % 2)
-// 		breakpoint++;
-
-// 	T c1(container.begin(), container.begin() + breakpoint);
-// 	T c2(container.begin() + breakpoint, container.end());
-// 	std::pair<T, T> split_container(c1, c2);
-// 	if (container.size() > 1) {
-// 		split_container.first = ford_container(split_container.first, incr);
-// 		split_container.second = ford_container(split_container.second, incr);
-// 		size_t k = -1;
-// 		for (size_t i = 0; i < split_container.second.size(); i++) {
-// 			while (++k < split_container.first.size() && split_container.first[k] < split_container.second[i]){(*incr)++;};
-// 			if (k == split_container.first.size())
-// 				split_container.first.push_back(split_container.second[i]);
-// 			else{
-// 				split_container.first.insert(split_container.first.begin() + k, split_container.first[k]);
-// 				split_container.first[k] = split_container.second[i];
-// 			}
-// 		}
-// 		return split_container.first;
-// 	}
-// 	return container;
-// }
-
 template<typename T>
-std::vector<T> split_cont(T container, int cont_size) {
+std::vector<T> split_cont(T container, int cont_size, bool sort, int *k) {
 	std::vector<T> groups;
 	size_t i = 0;
 
 	while (i < container.size()) {
-		T tmp(container.begin() + i, container.begin() + i + cont_size);
+		typename T::iterator it = container.begin() + i + cont_size;
+		if (i + cont_size > container.size())
+			it = container.end();
+		T tmp(container.begin() + i, it);
 		groups.push_back(tmp);
 		i += cont_size;
-		// std::cout << tmp.size() << std::endl;
-		// print_cont(groups.back(), "=========> ");
 	}
 	i = 0;
-	while (i < groups.size() && i + 1 < groups.size()) {
+	while (sort && i < groups.size() && i + 1 < groups.size() && groups[i].size() == groups[i + 1].size()) {
+			(*k)++;
 		if (groups[i].back() > groups[i + 1].back()){
-			// ::print_cont(groups[i], "Old groups[i]: ");
-			// ::print_cont(groups[i + 1], "Old groups[i + 1]: ");
 			std::swap(groups[i], groups[i + 1]);
-			// ::print_cont(groups[i], "groups[i]: ");
-			// ::print_cont(groups[i + 1], "groups[i + 1]: ");
 		}
 		i += 2;
 	}
@@ -80,13 +52,39 @@ T join_cont(std::vector<T> groups) {
 }
 
 template<typename T>
-T	ford_container(T &container, int cont_size = 1) {
-	std::vector<T> groups(split_cont(container, cont_size));
+T	sort_cont(std::vector<T> groups) {
+	std::vector<T> main_chain;
+	size_t i = 2;
+
+	main_chain.insert(main_chain.end(), groups.begin(), groups.begin() + 2);
+	while (i < groups.size()) {
+		if (i % 2)
+			main_chain.push_back(groups[i]);
+		else {
+			typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[i]);
+			        std::cout << "Target found at index: " << std::distance(main_chain.begin(), it) << std::endl;
+		}
+		i++;
+	}
+	// i = 2;
+	// while (main_chain.size() < groups.size() && groups[i].size() == groups[0].size()) {
+	// 	std::lower_bound(main_chain.begin(), 	)
+	// 	i++;
+	// }
+	if (main_chain.size() < groups.size())
+		main_chain.push_back(groups[i]);
+
+	return join_cont(main_chain);
+}
+
+template<typename T>
+T	ford_container(T container, int * k, int cont_size = 1) {
+	std::vector<T> groups(split_cont(container, cont_size, 1, k));
 
 	container = join_cont(groups);
 	if (groups.size() > 4 || (groups.size() == 4 && groups.back().size() == groups.front().size()))
-		ford_container(container, cont_size * 2);
-	return container;
+		container = ford_container(container, k, cont_size * 2);
+	return sort_cont(groups);
 }
 
 void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort);
