@@ -17,8 +17,9 @@ void	print_cont(T cont, std::string s) {
 	std::cout << std::endl;
 }
 
+extern int x;
 template<typename T>
-std::vector<T> split_cont(T container, int cont_size, bool sort, int *k) {
+std::vector<T> split_cont(T container, size_t cont_size, bool sort, int *k) {
 	std::vector<T> groups;
 	size_t i = 0;
 
@@ -54,13 +55,14 @@ T join_cont(std::vector<T> groups) {
 
 template<typename T>
 bool compareByPos(const T& a, const T& b) {
+	x++;
 	return a.back() < b.back();
 }
-
 template<typename T>
-T	sort_cont(std::vector<T> groups, size_t cont_size) {
+T	sort_cont(T container, size_t cont_size, int *k) {
 	std::vector<T> main_chain;
 	size_t i = 0;
+	std::vector<T> groups(split_cont(container, cont_size, 0, k));
 
 	while (i < groups.size()) {
 		if(i < 2) {
@@ -81,14 +83,13 @@ T	sort_cont(std::vector<T> groups, size_t cont_size) {
 }
 
 template<typename T>
-T	ford_container(T container, int * k, size_t cont_size = 1) {
+T	ford_container(T container, int *k, size_t cont_size = 1) {
 	std::vector<T> groups(split_cont(container, cont_size, 1, k));
 
 	container = join_cont(groups);
 	if (groups.size() > 4 || (groups.size() == 4 && groups.back().size() == groups.front().size()))
 		container = ford_container(container, k, cont_size * 2);
-	groups = (split_cont(container, cont_size, 0, k));
-	return sort_cont(groups, cont_size);
+	return sort_cont(container, cont_size, k);
 }
 
 void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort);
