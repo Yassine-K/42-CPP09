@@ -1,7 +1,4 @@
 #include "PmergeMe.hpp"
-#include <iostream>
-#include <sys/_types/_size_t.h>
-#include <vector>
 
 int x = 0;
 

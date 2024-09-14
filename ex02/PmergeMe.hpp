@@ -8,6 +8,8 @@
 #include <vector>
 #include <deque>
 
+extern int x;
+
 template<typename T>
 void	print_cont(T cont, std::string s) {
 	std::cout << s;
@@ -17,7 +19,6 @@ void	print_cont(T cont, std::string s) {
 	std::cout << std::endl;
 }
 
-extern int x;
 template<typename T>
 std::vector<T> split_cont(T container, size_t cont_size, bool sort, int *k) {
 	std::vector<T> groups;
@@ -58,6 +59,7 @@ bool compareByPos(const T& a, const T& b) {
 	x++;
 	return a.back() < b.back();
 }
+
 template<typename T>
 T	sort_cont(T container, size_t cont_size, int *k) {
 	std::vector<T> main_chain;
