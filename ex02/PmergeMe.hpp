@@ -1,12 +1,11 @@
 #pragma once
 #include <algorithm>
-#include <cstddef>
 #include <iostream>
 #include <iterator>
 #include <sstream>
-#include <string>
 #include <vector>
 #include <deque>
+#include <cmath>
 
 extern int x;
 
@@ -64,6 +63,7 @@ template<typename T>
 T	sort_cont(T container, size_t cont_size, int *k) {
 	std::vector<T> main_chain;
 	size_t i = 0;
+	// size_t jacob = (std::pow(2, i) - std::pow(-1, i)) / 3;
 	std::vector<T> groups(split_cont(container, cont_size, 0, k));
 
 	while (i < groups.size()) {
