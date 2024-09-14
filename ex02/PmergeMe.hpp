@@ -1,9 +1,10 @@
 #pragma once
 #include <algorithm>
+#include <cstddef>
 #include <iostream>
+#include <iterator>
 #include <sstream>
 #include <string>
-#include <sys/_types/_size_t.h>
 #include <vector>
 #include <deque>
 
@@ -52,39 +53,42 @@ T join_cont(std::vector<T> groups) {
 }
 
 template<typename T>
-T	sort_cont(std::vector<T> groups) {
-	std::vector<T> main_chain;
-	size_t i = 2;
+bool compareByPos(const T& a, const T& b) {
+	return a.back() < b.back();
+}
 
-	main_chain.insert(main_chain.end(), groups.begin(), groups.begin() + 2);
+template<typename T>
+T	sort_cont(std::vector<T> groups, size_t cont_size) {
+	std::vector<T> main_chain;
+	size_t i = 0;
+
 	while (i < groups.size()) {
-		if (i % 2)
+		if(i < 2) {
+			if (groups[i].size() == cont_size)
+				main_chain.push_back(groups[i]);
+		}
+		else if (i % 2)
 			main_chain.push_back(groups[i]);
-		else {
-			typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[i]);
-			        std::cout << "Target found at index: " << std::distance(main_chain.begin(), it) << std::endl;
+		else if (groups[i].size() == cont_size){
+			typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[i], compareByPos<T>);
+			main_chain.insert(it, groups[i]);
 		}
 		i++;
 	}
-	// i = 2;
-	// while (main_chain.size() < groups.size() && groups[i].size() == groups[0].size()) {
-	// 	std::lower_bound(main_chain.begin(), 	)
-	// 	i++;
-	// }
 	if (main_chain.size() < groups.size())
-		main_chain.push_back(groups[i]);
-
+		main_chain.push_back(groups[i - 1]);
 	return join_cont(main_chain);
 }
 
 template<typename T>
-T	ford_container(T container, int * k, int cont_size = 1) {
+T	ford_container(T container, int * k, size_t cont_size = 1) {
 	std::vector<T> groups(split_cont(container, cont_size, 1, k));
 
 	container = join_cont(groups);
 	if (groups.size() > 4 || (groups.size() == 4 && groups.back().size() == groups.front().size()))
 		container = ford_container(container, k, cont_size * 2);
-	return sort_cont(groups);
+	groups = (split_cont(container, cont_size, 0, k));
+	return sort_cont(groups, cont_size);
 }
 
 void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort);
