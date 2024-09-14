@@ -9,6 +9,9 @@
 
 extern int x;
 
+void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort);
+size_t jacob_sthal(size_t i, size_t len);
+
 template<typename T>
 void	print_cont(T cont, std::string s) {
 	std::cout << s;
@@ -62,16 +65,14 @@ bool compareByPos(const T& a, const T& b) {
 template<typename T>
 T	sort_cont(T container, size_t cont_size, int *k) {
 	std::vector<T> main_chain;
-	size_t i = 0;
-	// size_t jacob = (std::pow(2, i) - std::pow(-1, i)) / 3;
+	size_t i = 2;
 	std::vector<T> groups(split_cont(container, cont_size, 0, k));
+	// size_t jacob;
+	// std::cout << "Jacob :" << jacob << std::endl;
 
+	main_chain.insert(main_chain.end(), groups.begin(), groups.begin() + 2);
 	while (i < groups.size()) {
-		if(i < 2) {
-			if (groups[i].size() == cont_size)
-				main_chain.push_back(groups[i]);
-		}
-		else if (i % 2)
+		if (i % 2)
 			main_chain.push_back(groups[i]);
 		else if (groups[i].size() == cont_size){
 			typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[i], compareByPos<T>);
@@ -93,5 +94,3 @@ T	ford_container(T container, int *k, size_t cont_size = 1) {
 		container = ford_container(container, k, cont_size * 2);
 	return sort_cont(container, cont_size, k);
 }
-
-void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort);
