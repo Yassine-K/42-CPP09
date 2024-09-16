@@ -67,12 +67,13 @@ T	sort_cont(T container, size_t cont_size, int *k) {
 	size_t i = 3;
 	std::vector<T> groups(split_cont(container, cont_size, 0, k));
 	size_t jacob;
+
 	main_chain.insert(main_chain.end(), groups.begin(), groups.begin() + 2);
 
 	for (size_t it = 3; it < groups.size(); it += 2) {
-			if (groups[it].size() == cont_size) {
-				main_chain.push_back(groups[it]);
-			}
+		if (groups[it].size() == cont_size) {
+			main_chain.push_back(groups[it]);
+		}
 	}
 	while (main_chain.size() < groups.size() && i < groups.size()) {
 		if (groups[i].size() == cont_size) {
@@ -80,7 +81,11 @@ T	sort_cont(T container, size_t cont_size, int *k) {
 			while (jacob > 1) {
 				if (groups[jacob].size() == cont_size && std::find(main_chain.begin(), main_chain.end(), groups[jacob]) == main_chain.end()) {
 					if (!(jacob % 2)) {
-						typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[jacob], compareByPos<T>);
+						size_t tmp = jacob + 1;
+						if (tmp >= main_chain.size())
+							tmp = main_chain.size();
+						// typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[jacob], compareByPos<T>);
+						typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.begin() + tmp, groups[jacob], compareByPos<T>);
 						main_chain.insert(it, groups[jacob]);
 					}
 				}

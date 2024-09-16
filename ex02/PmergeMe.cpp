@@ -1,5 +1,4 @@
 #include "PmergeMe.hpp"
-#include <cstddef>
 
 int x = 0;
 
@@ -21,8 +20,8 @@ void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort) {
 
 size_t jacob_sthal(size_t i, size_t len) {
 	size_t res = (std::pow(2, i) - std::pow(-1, i)) / 3;
-	if (res < 2)
-		res = 3;
+	// if (res < 2)
+	// 	res = 3;
 	if (res >= len)
 		res = len;
 	return res;
