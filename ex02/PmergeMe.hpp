@@ -26,6 +26,9 @@ std::vector<T> split_cont(T container, size_t cont_size, bool sort, int *k) {
 	std::vector<T> groups;
 	size_t i = 0;
 
+	if (!sort) {
+		::print_cont(container, "main: ");
+	}
 	while (i < container.size()) {
 		typename T::iterator it = container.begin() + i + cont_size;
 		if (i + cont_size > container.size())
@@ -48,10 +51,8 @@ std::vector<T> split_cont(T container, size_t cont_size, bool sort, int *k) {
 template<typename T>
 T join_cont(std::vector<T> groups) {
 	T ret;
-	size_t i = 0;
-	while (i < groups.size()) {
-		ret.insert(ret.end(), groups[i].begin(), groups[i].end());
-		i++;
+	for (typename std::vector<T>::iterator i = groups.begin(); i != groups.end(); ++i) {
+		ret.insert(ret.end(), (*i).begin(), (*i).end());
 	}
 	return ret;
 }
@@ -65,23 +66,57 @@ bool compareByPos(const T& a, const T& b) {
 template<typename T>
 T	sort_cont(T container, size_t cont_size, int *k) {
 	std::vector<T> main_chain;
-	size_t i = 2;
+	size_t i = 3;
 	std::vector<T> groups(split_cont(container, cont_size, 0, k));
-	// size_t jacob;
-	// std::cout << "Jacob :" << jacob << std::endl;
+	size_t jacob;
 
 	main_chain.insert(main_chain.end(), groups.begin(), groups.begin() + 2);
-	while (i < groups.size()) {
-		if (i % 2)
-			main_chain.push_back(groups[i]);
-		else if (groups[i].size() == cont_size){
-			typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[i], compareByPos<T>);
-			main_chain.insert(it, groups[i]);
+	// while (i < groups.size()) {
+	// 	if (i % 2)
+	// 		main_chain.push_back(groups[i]);
+	// 	else if (groups[i].size() == cont_size){
+	// 		typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[i], compareByPos<T>);
+	// 		main_chain.insert(it, groups[i]);
+	// 	}
+	// 	i++;
+	// }
+
+	while (main_chain.size() < groups.size() && i < groups.size()) {
+		jacob = jacob_sthal(i, groups.size());
+		// jacob = jacob_sthal(i, groups.size()) + main_chain.size();
+		// for (size_t diff = main_chain.size(); diff < jacob; diff++) {
+		while (jacob > 1) {
+			// std::cout << s << std::endl;
+			if (groups[jacob].size() == cont_size && std::find(main_chain.begin(), main_chain.end(), groups[jacob]) == main_chain.end()) {
+				if (jacob % 2) {
+					main_chain.push_back(groups[jacob]);
+				}
+				else {
+					typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[jacob], compareByPos<T>);
+					main_chain.insert(it, groups[jacob]);
+				}
+			}
+			// if (groups[diff].size() == cont_size && std::find(main_chain.begin(), main_chain.end(), groups[diff]) == main_chain.end()) {
+			// 	if (diff % 2) {
+			// 		main_chain.push_back(groups[diff]);
+			// 	}
+			// 	else {
+			// 		typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[diff], compareByPos<T>);
+			// 		main_chain.insert(it, groups[diff]);
+			// 	}
+			// }
+			jacob--;
 		}
 		i++;
+		std::cout << "======| " <<i << " " << jacob << " " << groups.size() << std::endl;
+		if (groups.back().size() != main_chain.front().size() && main_chain.size() + 1 == groups.size())
+			break;
 	}
 	if (main_chain.size() < groups.size())
-		main_chain.push_back(groups[i - 1]);
+		main_chain.push_back(groups.back());
+	// for(typename std::vector<T>::iterator f = main_chain.begin(); f != main_chain.end(); ++f)
+	// 	::print_cont(*f, "main: ");
+	std::cout << "============" << std::endl;
 	return join_cont(main_chain);
 }
 

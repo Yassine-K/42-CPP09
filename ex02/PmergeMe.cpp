@@ -21,9 +21,10 @@ void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort) {
 
 size_t jacob_sthal(size_t i, size_t len) {
 	size_t res = (std::pow(2, i) - std::pow(-1, i)) / 3;
+		std::cout << "======| " << res << std::endl;
 	if (res < 2)
 		res = 3;
-	if (res > len)
-		res = len - 1;
+	if (res >= len)
+		res = len;
 	return res;
 }
