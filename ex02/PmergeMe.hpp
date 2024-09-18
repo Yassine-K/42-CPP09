@@ -64,7 +64,7 @@ bool compareByPos(const T& a, const T& b) {
 template<typename T>
 T	sort_cont(T container, size_t cont_size, int *k) {
 	std::vector<T> main_chain;
-	size_t i = 3;
+	size_t i = 2;
 	std::vector<T> groups(split_cont(container, cont_size, 0, k));
 	size_t jacob;
 
@@ -75,22 +75,26 @@ T	sort_cont(T container, size_t cont_size, int *k) {
 			main_chain.push_back(groups[it]);
 		}
 	}
+	// for(typename std::vector<T>::iterator f = groups.begin(); f != groups.end(); ++f)
+	// 	::print_cont(*f, "--------->: ");
+	for(typename std::vector<T>::iterator f = main_chain.begin(); f != main_chain.end(); ++f)
+		::print_cont(*f, "***: ");
+	size_t end = 1;
 	while (main_chain.size() < groups.size() && i < groups.size()) {
 		if (groups[i].size() == cont_size) {
-			jacob = jacob_sthal(i, groups.size());
-			while (jacob > 1) {
-				if (groups[jacob].size() == cont_size && std::find(main_chain.begin(), main_chain.end(), groups[jacob]) == main_chain.end()) {
-					if (!(jacob % 2)) {
-						size_t tmp = jacob + 1;
-						if (tmp >= main_chain.size())
-							tmp = main_chain.size();
-						// typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.end(), groups[jacob], compareByPos<T>);
-						typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), main_chain.begin() + tmp, groups[jacob], compareByPos<T>);
-						main_chain.insert(it, groups[jacob]);
+				jacob = jacob_sthal(i, groups.size());
+				while ( jacob > end) {
+					if (groups[jacob].size() == cont_size) {
+						if (!(jacob % 2)) {
+							typename std::vector<T>::iterator it_end = std::find(main_chain.begin(), main_chain.end(), groups[jacob + 1]) ;
+							typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), it_end, groups[jacob], compareByPos<T>);
+							main_chain.insert(it, groups[jacob]);
+							::print_cont(groups[jacob], "?: ");
+						}
 					}
+					jacob--;
 				}
-				jacob--;
-			}
+				end = jacob_sthal(i, groups.size());
 		}
 		i++;
 		if (groups.back().size() != main_chain.front().size() && main_chain.size() + 1 == groups.size())
@@ -99,9 +103,10 @@ T	sort_cont(T container, size_t cont_size, int *k) {
 	if (main_chain.size() < groups.size())
 		main_chain.push_back(groups.back());
 
+		// ::print_cont(container, "------->: ");
 	// for(typename std::vector<T>::iterator f = main_chain.begin(); f != main_chain.end(); ++f)
 	// 	::print_cont(*f, "main: ");
-	// std::cout << "============" << std::endl;
+	std::cout << "============" << std::endl;
 	return join_cont(main_chain);
 }
 
