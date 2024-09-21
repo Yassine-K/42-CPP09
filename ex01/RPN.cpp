@@ -18,34 +18,36 @@ int calculator (std::string exp) {
 			throw ("Reverse Polish Notation not respected!");
 		if (i && op_i != std::string::npos) {
 			if (nums.size() > 1) {
-				res = nums.front();
-				nums.pop_front();
-				switch (tokens.find(calc_elem[0])) {
-					case 0:
-						res += nums.back();
-						break;
-					case 1:
-						res *= nums.back();
-						break;
-					case 2:
-						res /= nums.back();
-						break;
-					default:
-						res -= nums.back();
-						break;
-				}
+				res = nums.back();
 				nums.pop_back();
-				nums.push_front(res);
+				// while (nums.size()){
+					switch (tokens.find(calc_elem[0])) {
+						case 0:
+							res = nums.back() + res;
+							break;
+						case 1:
+							res = nums.back() * res;
+							break;
+						case 2:
+							res = nums.back() / res;
+							break;
+						default:
+							res = nums.back() - res;
+							break;
+					}
+					nums.pop_back();
+				// }
+				nums.push_back(res);
 			}
-			else
-			op.push_back(tokens[tokens.find(calc_elem[0])]);
+			// else
+			// 	op.push_back(tokens[tokens.find(calc_elem[0])]);
 		}
 		else {
 			nums.push_back(std::strtod(const_cast<char *>(calc_elem.c_str()), &endp));
 		}
 		i++;
 	}
-	if (op.size() || nums.size() != 1)
-		throw ("Reverse Polish Notation not respected!");
+	// if (op.size() || nums.size() != 1)
+	// 	throw ("Reverse Polish Notation not respected!");
 	return res;
 }
