@@ -7,8 +7,9 @@
 #include <vector>
 #include <deque>
 #include <cmath>
+#include <sys/time.h>
 
-extern int x;
+// extern int x;
 
 void	ford_john(std::vector<int> vec_sort, std::deque<int> deq_sort);
 size_t jacob_sthal(size_t i, size_t len);
@@ -57,9 +58,7 @@ T join_cont(std::vector<T> groups) {
 
 template<typename T>
 bool compareByPos(const T& a, const T& b) {
-	x++;
-								::print_cont(a, "A == ");
-								::print_cont(b, "B == ");
+	// x++;
 	return a.back() < b.back();
 }
 
@@ -78,19 +77,13 @@ T	sort_cont(T container, size_t cont_size, int *k) {
 			main_chain.push_back(groups[it]);
 		}
 	}
-	// std::cout << "-------------------------start-------------------------" << std::endl;
 	while (main_chain.size() < groups.size() && i < groups.size()) {
 		if (groups[i].size() == cont_size) {
 				jacob = jacob_sthal(i, groups.size());
 				while ( jacob > end) {
 					if (!(jacob % 2) && groups[jacob].size() == cont_size) {
-						std::cout << "-------------------------Before: " << x << std::endl;
-							for(typename std::vector<T>::iterator f = main_chain.begin(); f != main_chain.end(); ++f)
-								::print_cont(*f, "main: ");
 							typename std::vector<T>::iterator it_end = std::find(main_chain.begin(), main_chain.end(), groups[jacob + 1]);
 							typename std::vector<T>::iterator it = std::lower_bound(main_chain.begin(), it_end, groups[jacob], compareByPos<T>);
-								::print_cont(*(it), "res==========: ");
-						std::cout << "-------------------------After: " << x << std::endl;
 							main_chain.insert(it, groups[jacob]);
 					}
 					jacob--;
@@ -115,3 +108,8 @@ T	ford_container(T container, int *k, size_t cont_size = 1) {
 		container = ford_container(container, k, cont_size * 2);
 	return sort_cont(container, cont_size, k);
 }
+
+enum e_time {
+	vect,
+	deq,
+};
