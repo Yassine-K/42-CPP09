@@ -15,6 +15,8 @@ int main(int ac, char **av) {
 			if (tmp.empty() || tmp.find_first_not_of("0123456789") != std::string::npos)
 				throw ("Invalid argument!");
 			int val = std::strtod(tmp.c_str(), &endp);
+			if (val < 0)
+				throw ("Invalid argument!");
 			if (std::find(vec_sort.begin(), vec_sort.end(), val) != vec_sort.end())
 				throw ("Duplicated number!");
 			vec_sort.push_back(val);
