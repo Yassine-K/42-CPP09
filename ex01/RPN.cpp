@@ -28,6 +28,8 @@ int calculator (std::string exp) {
 							res = nums.back() * res;
 							break;
 						case 2:
+							if (!res)
+								throw("Can't divide by 0!");
 							res = nums.back() / res;
 							break;
 						default:
